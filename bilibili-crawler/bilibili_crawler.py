@@ -12,9 +12,9 @@ config={
     }
 db=pymysql.connect(**config)
 cursor=db.cursor()
-submit="INSERT INTO users_info(ID,name,sign,vtype,vstatus,level,birthday,following,follower) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s);"
-t=0.05
-id=1
+submit="INSERT INTO users_info(ID,name,sex,sign,vtype,vstatus,level,birthday,following,follower) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+t=0.1
+id=4974
 sfp=open('K:\\test\\data.txt','w')
 efp=open('err.txt','w')
 while 1:
@@ -35,8 +35,10 @@ while 1:
         fdict=fdata['data']
         following=fdict['following']        #关注数
         follower=fdict['follower']          #粉丝数
-        cursor.execute(submit,(id,name,sign,vtype,vstatus,level,birthday,following,follower))
+        cursor.execute(submit,(id,name,sex,sign,vtype,vstatus,level,birthday,following,follower))
         db.commit()
+        sfp.write(str(id)+'\n')
+        sfb.flush()
         print(str(id)+' success')
     except:
         print("ERR:读取id="+str(id)+"失败")
@@ -47,7 +49,8 @@ while 1:
         break
     id=id+1
     #time.sleep(t)
-efp.close
+sfb.close()
+efp.close()
     
 
 
