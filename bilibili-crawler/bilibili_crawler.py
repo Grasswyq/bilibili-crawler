@@ -11,11 +11,12 @@ config={
     "user":"root",
     "password":"g9.5Ls9.23&heart",
     "database":"bilibili_users"
-    }
+    }   
 db=pymysql.connect(**config)
 cursor=db.cursor()
 submit="INSERT INTO users_info(ID,name,sex,sign,vtype,vstatus,level,birthday,following,follower) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
 t=0.1
+et=0
 tfp=open('tmp.txt','r')
 bp=tfp.readline()
 id=int(bp)+1
@@ -44,6 +45,7 @@ while 1:
         tfp=open('tmp.txt','w')
         tfp.write(str(id)+'\n')
         tfp.close()
+        et=0
         print(str(id)+' success')
     except:
         if mdata['code']==-404:             #若该用户不存在，code值为-404
@@ -52,13 +54,18 @@ while 1:
             tfp=open('tmp.txt','w')
             tfp.write(str(id)+'\n')
             tfp.close()
+            et=0
             print("ERR:"+str(id)+"\tNOT EXIST")
         else:
-            print("ERR"+str(id)+"\tERROR")
-            efp.write(str(id)+'\n')
-            efp.flush()
-    if id==200000:
-        break
+            if et<5:
+                et=et+1
+                print("ERR:"+str(id)+"\tERROR\tTRY:"+str(et))
+                id=id-1
+            else:
+                print("skip "+str(id))
+                efp.write(str(id)+'\n')
+                efp.flush()
+                et=0
     id=id+1
     time.sleep(t)
 efp.close()
